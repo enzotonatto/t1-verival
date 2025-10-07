@@ -36,18 +36,33 @@ jobs:
         id: testcounts
         run: |
           python - <<'PY'
-          import xml.etree.ElementTree as ET, os
-          path="target/surefire-reports/TESTS-TestSuites.xml"
-          r=ET.parse(path).getroot()
-          tests=int(r.attrib.get('tests',0))
-          failures=int(r.attrib.get('failures',0))
-          errors=int(r.attrib.get('errors',0))
-          skipped=int(r.attrib.get('skipped',0))
-          executed=tests - skipped
-          passed=tests - failures - errors - skipped
-          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
-              f.write(f"executed={executed}\n")
-              f.write(f"passed={passed}\n")
+          import os, glob
+          import xml.etree.ElementTree as ET
+          dirs = ['target/surefire-reports', 'target/failsafe-reports']
+          tests = failures = errors = skipped = 0
+          for d in dirs:
+            if os.path.isdir(d):
+              for f in glob.glob(os.path.join(d, 'TEST-*.xml')):
+                try:
+                  root = ET.parse(f).getroot()
+                  if root.tag == 'testsuite':
+                    tests += int(root.attrib.get('tests', 0))
+                    failures += int(root.attrib.get('failures', 0))
+                    errors += int(root.attrib.get('errors', 0))
+                    skipped += int(root.attrib.get('skipped', 0))
+                  elif root.tag == 'testsuites':
+                    for ts in root.findall('testsuite'):
+                      tests += int(ts.attrib.get('tests', 0))
+                      failures += int(ts.attrib.get('failures', 0))
+                      errors += int(ts.attrib.get('errors', 0))
+                      skipped += int(ts.attrib.get('skipped', 0))
+                except Exception:
+                  pass
+          executed = tests - skipped
+          passed = tests - failures - errors - skipped
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+            f.write(f"executed={executed}\n")
+            f.write(f"passed={passed}\n")
           PY
 
       - name: Generate Tests Badge
