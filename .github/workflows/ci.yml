@@ -9,10 +9,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -26,6 +29,21 @@ jobs:
 
       - name: Generate JaCoCo report
         run: mvn -B jacoco:report
+
+      - name: Generate JaCoCo Badges
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          generate-branches-badge: true
+          jacoco-csv-file: target/site/jacoco/jacoco.csv
+
+      - name: Commit badges to repo
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/badges/*
+          git commit -m "Update JaCoCo badges [skip ci]" || echo "No changes to commit"
+          git push
 
       - name: Upload JaCoCo HTML report
         uses: actions/upload-artifact@v4
