@@ -27,4 +27,23 @@ public class SquareTest {
     void testIsSquare_withOne() {
         assertTrue(Square.isSquare(1));
     }
+
+    @Test
+    void testConstructorCoverage() {
+        new Square();
+    }
+
+    @Test
+    void testMainPrintsTrue() {
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        java.io.PrintStream original = System.out;
+        System.setOut(new java.io.PrintStream(out));
+        try {
+            Square.main(new String[]{});
+        } finally {
+            System.setOut(original);
+        }
+        String output = out.toString().trim();
+        assertEquals("true", output);
+    }
 }
