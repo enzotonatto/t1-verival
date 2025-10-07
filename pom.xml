@@ -67,6 +67,47 @@
                     </includes>
                 </configuration>
             </plugin>
+
+            <!-- JaCoCo: instrumentação + relatório em verify -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.10</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Badge de cobertura a partir do relatório JaCoCo -->
+            <plugin>
+                <groupId>com.sigpwned</groupId>
+                <artifactId>jacoco-badge-maven-plugin</artifactId>
+                <version>0.1.4</version>
+                <executions>
+                    <execution>
+                        <id>generate-jacoco-badge</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>badge</goal>
+                        </goals>
+                        <configuration>
+                            <badgeFile>${project.build.directory}/jacoco.svg</badgeFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
