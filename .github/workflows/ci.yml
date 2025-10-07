@@ -68,7 +68,7 @@ jobs:
       - name: Generate Tests Badge
         uses: emibcn/badge-action@v1
         with:
-          label: 'Tests'
+          label: 'tests'
           status: '${{ steps.testcounts.outputs.passed }} passed / ${{ steps.testcounts.outputs.executed }} run'
           path: '.github/badges/tests.svg'
           color: 'blue'
