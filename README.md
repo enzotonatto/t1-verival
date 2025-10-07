@@ -2,7 +2,7 @@
 
 > Enzo Tonatto, Lucas Fraga e Pedro Guimarães 
 
-[![Coverage](.github/badges/jacoco.svg)](target/site/jacoco/index.html)
+[![Coverage](.github/badges/jacoco.svg)](target/site/jacoco/index.html) [![Tests](.github/badges/tests.svg)](#)
 
 Este projeto contém uma classe Java simples `Square` com um método `isSquare(int n)` que verifica se um número é um quadrado perfeito.
 
